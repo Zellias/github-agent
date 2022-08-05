@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="wnameth=device-wnameth, initial-scale=1.0">
+    <title>Github Searcher</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.22.0/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+
+        <input type="text" placeholder="Github name" class=" dawdaw input input-bordered input-success w-full max-w-xs"  style="margin-left:auto; margin-right: auto;  margin-top: 80px; display: block;"/>
+        <button class="btn btn-active btn-accent"onclick="myFunction()" style="margin-left:auto; margin-right: auto;  margin-top: 10px; display: block;">Search</button>
+
+        <div style="text-align: center;">
+            <img id="image" src="" style="margin-left: auto; margin-right: auto; display: block; border-radius: 50%; height: 250px; width: 250px;" alt="">
+            <h3 name="name"></h3>
+            <h3 name="id"></h3>
+            <h3 name="followers"></h3>
+            <h3 name="following"></h3>
+            <h3 name="location"></h3>
+            <h3 name="repos"></h3>
+            <h3 name="updated_at"></h3>
+            <h3 name="created_at"></h3>
+            <h3 name="err"></h3>
+            <h1 style="font-size: 38px;" name="sub_followers"></h1>
+            <ul id="followers_list">
+
+            </ul>
+            <ul id="following_list">
+
+            </ul>
+        </div>
+
+</body>
+
+</html>
+
+<script>
+    function myFunction() {
+        axios.get(`https://api.github.com/users/${document.getElementsByClassName('dawdaw')[0].value}`).then(e =>{
+console.log(e.data)
+            document.getElementsByName('err')[0].innerText = ''
+        document.getElementsByName('name')[0].innerText = 'Name : ' + e.data.name
+        document.getElementsByName('id')[0].innerText = 'ID : ' + e.data.id
+        document.getElementsByName('followers')[0].innerText = 'Followers : ' + e.data.followers
+        document.getElementsByName('following')[0].innerText = 'Following : ' + e.data.following
+        document.getElementsByName('location')[0].innerText = 'Location : ' + e.data.location
+        document.getElementsByName('repos')[0].innerText = 'Repos : ' + e.data.public_repos
+        document.getElementsByName('updated_at')[0].innerText = 'Updated At : ' + e.data.updated_at
+        document.getElementsByName('created_at')[0].innerText = 'Created At : ' + e.data.created_at
+        document.getElementById('image').src = e.data.avatar_url
+        document.getElementById("followers_list").innerHTML = ""
+        if(e.data.followers > 0){
+            document.getElementsByName('sub_followers')[0].innerText = 'Followers'
+            axios.get(e.data.followers_url).then(f => {
+            f.data.forEach(data => {
+                document.getElementById("followers_list").innerHTML += `<img src="${data.avatar_url}" style="width:75px;heigh:75px;border-radius:50%; margin-left: auto; margin-right: auto; display: block;"><li>` + data.login + '</li>';
+                console.log(data)
+
+            });
+        })
+        }else{
+            document.getElementsByName('sub_followers')[0].innerText = ''
+        }
+        
+     
+        
+
+    }).catch(e =>{
+        document.getElementById("followers_list").innerHTML = ""
+        document.getElementsByName('err')[0].innerText = 'ID NOT FOUND'
+        document.getElementsByName('name')[0].innerText = ''
+        document.getElementsByName('id')[0].innerText = ''
+        document.getElementsByName('followers')[0].innerText =''
+        document.getElementsByName('following')[0].innerText =''
+        document.getElementsByName('location')[0].innerText ='' 
+        document.getElementsByName('repos')[0].innerText = ''
+        document.getElementsByName('updated_at')[0].innerText = ''
+        document.getElementsByName('created_at')[0].innerText = ''
+        document.getElementsByName('sub_followers')[0].innerText = ''
+        document.getElementById('image').src = e.data.avatar_url = ''
+    })     
+    }
+ 
+</script>
